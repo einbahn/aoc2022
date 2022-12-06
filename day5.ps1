@@ -11,35 +11,24 @@ foreach ($c in $crates) {
     $stacks.Add($s) | out-null
 }
 
-#part1
-# foreach ($i in $instructions) {
-#     $split = $i -split "\s" 
-#     $numberToMove = $split[1]
-#     $source = $split[3]
-#     $destination = $split[5]
-#     0..($numberToMove - 1) | foreach {
-#         $stacks[$destination-1].push($stacks[$source-1].pop())
-#         # $stacks[$source-1].peek()
-#     }
-# }
-
-#part2
 foreach ($i in $instructions) {
     $split = $i -split "\s" 
     $numberToMove = $split[1]
     $source = $split[3]
     $destination = $split[5]
-    $sourceStack = $stacks[$source-1]
+    $sourceStack = $stacks[$source - 1]
+
+    #part1
+    # 0..($numberToMove - 1) | Foreach-Object {
+    #     $stacks[$destination-1].push($stacks[$source-1].pop())
+    # }
     
-    $itemsToMove = $sourceStack | select -first $numberToMove
-    if ($itemsToMove.count -eq 1) { 
-        $stacks[$destination-1].push($itemsToMove[0])
+    #part2
+    $itemsToMove = @($sourceStack | Select-Object -first $numberToMove)
+    [array]::Reverse($itemsToMove)
+    0..($numberToMove - 1) | Foreach-Object {
+        $stacks[$destination - 1].push($itemsToMove[$_])
         $sourceStack.pop() | out-null
-    } else {
-        $itemsToMove[($itemsToMove.Count-1)..0] | foreach {
-            $stacks[$destination-1].push($_)
-            $sourceStack.pop() | out-null
-        }
     }
 }
 
