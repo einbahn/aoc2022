@@ -55,12 +55,24 @@ function solve ($contents, $folder, $currentPath) {
     $t
 }
 
+# get content of / 
 $root = Get-Instructions 2
+# recurse through / depth first
 solve $root "/" "/" | out-null
-
 $ans = 0
+# find folders with size smaller than 100,000
 $total.Values | where {$_ -le 100000} | foreach { 
     $ans += $_ 
 }
+Write-host "Answer to part 1 is $ans"
 
-Write-host "$ans"
+# part 2
+$needed = 30000000
+$size = 70000000
+$smallest = [double]::PositiveInfinity
+foreach ($f in $total.Keys) {
+    if (($size - $total["\"] + $total[$f]) -gt $needed -and $total[$f] -lt $smallest) {
+        $smallest = $total[$f]
+    }
+}
+write-host "Answer to part 2 is $smallest"
