@@ -93,9 +93,19 @@ function bfs ($start, $stop){
     return ($shortestDistance, $previous)
 }
 
-$startNode = $map | where {$_.Value -ceq 'S'}
+
+# $startNode = $map | where {$_.Value -ceq 'S'}
+$startNodes = $map | where {$_.Value -ceq 'S' -or $_.Value -ceq 'a'}
 $stopNode = $map | where {$_.Value -ceq 'E'}
-$d, $prev = bfs $startNode $stopNode
+$shortest = [double]::PositiveInfinity
+foreach ($startNode in $startNodes) {
+    $d, $prev = bfs $startNode $stopNode
+    if ($d -eq '-1') continue
+    if ($d -lt $shortest) {
+        $shortest = $d
+    }
+}
+
 
 # function buildPath ($stopNode, $previous) {
 #     $path = [system.collections.stack]::new()
